@@ -1,0 +1,2 @@
+/Files/CiscoPacketTracer822_64bit_setup.exe filter=lfs diff=lfs merge=lfs -text
+/Files/VMware-workstation-full-17.6.4-24832109.exe filter=lfs diff=lfs merge=lfs -text
