@@ -1,8 +1,6 @@
 :: ============Settings==============
 
 
-set EXTRACTION_PASSWORD=94y758r4gfQQ9
-
 set MIN_SIZE_REQUIRED=25GB
 
 set PROMPT_TO_DELETE_OLD_VMs=1
@@ -26,6 +24,9 @@ set INSTALL_DIR_NAME=CyberCamp
 
 
 :: ==============DO NOT MODIFY ANYTHING BELOW THIS LINE==========
+
+set USB_DRIVE=%cd%
+set /p EXTRACTION_PASSWORD=<!USB_DRIVE!\Files\ZIP_PASSWORD.txt
 
 @echo OFF
 setlocal EnableDelayedExpansion
@@ -295,12 +296,31 @@ if not exist !DESKTOPDIR!\!INSTALL_DIR_NAME! (
 ) else (
 	echo [92m   !DESKTOPDIR!\!INSTALL_DIR_NAME! already exists[0m
 )
+set "VBSFile=%temp%\CreateShortcutTemp.vbs"
 if "!ONEDRIVE_ENABLED!"=="1" (
-	mklink /D "!ONEDRIVE_DESKTOP_LOCATION!\CyberCamp" !DESKTOPDIR!
+    set "TargetSrc=!DESKTOPDIR!\!INSTALL_DIR_NAME!"
+	set "ShortcutDst=!ONEDRIVE_DESKTOP_LOCATION!\CyberCamp.lnk"
+    echo Set oWS = WScript.CreateObject^("WScript.Shell"^) > "%VBSFile%"
+    echo sLinkFile = "!ShortcutDst!" >> "%VBSFile%"
+    echo Set oLink = oWS.CreateShortcut^(sLinkFile^) >> "%VBSFile%"
+    echo oLink.TargetPath = "!TargetSrc!" >> "%VBSFile%"
+    echo oLink.Save >> "%VBSFile%"
+    
+    cscript //nologo "%VBSFile%"
+    del "!VBSFile!"
 )
 
 if "!USE_NEW_LOCATION!"=="1" (
-	mklink /D "!OLD_LOCATION!" !DESKTOPDIR!
+	set "TargetSrc=!OLD_LOCATION!"
+	set "ShortcutDst=!DESKTOPDIR!\CyberCamp.lnk"
+    echo Set oWS = WScript.CreateObject^("WScript.Shell"^) > "%VBSFile%"
+    echo sLinkFile = "!ShortcutDst!" >> "%VBSFile%"
+    echo Set oLink = oWS.CreateShortcut^(sLinkFile^) >> "%VBSFile%"
+    echo oLink.TargetPath = "!TargetSrc!" >> "%VBSFile%"
+    echo oLink.Save >> "%VBSFile%"
+    
+    cscript //nologo "%VBSFile%"
+    del "!VBSFile!"
 ) else (
 	set /A MIN_SIZE_REQUIRED=%MIN_SIZE_REQUIRED:~0,-2%
 	echo [94m [0m
@@ -353,12 +373,18 @@ if "!USE_NEW_LOCATION!"=="1" (
 		echo [92m   Computer has !sizeInGB! GB of free space[0m
 	)
 )
-set USB_DRIVE=%cd%
 
 echo [94m [0m
 echo [4m[94m===========================================================[0m
 echo [7m[94m   Beginning Installation...[0m
 echo [95m   Extraction Password: !EXTRACTION_PASSWORD![0m
+FOR /F "usebackq delims=" %%i in (`dir /s /b Files\VMS_TO_INSTALL\*.7z`) DO (
+		set fullpath=%%~i
+		if "!fullpath:~-2!"=="7z" (			
+			call !USB_DRIVE!\Files\__InstallCyberPatriotVM.bat "!DESKTOPDIR!\!INSTALL_DIR_NAME!" "!fullpath!" ""
+		)
+)
+
 FOR /F "usebackq delims=" %%i in (`dir /s /b Files\VMS_TO_INSTALL\*.zip`) DO (
 		set fullpath=%%~i
 		if "!fullpath:~-3!"=="zip" (			
@@ -438,6 +464,9 @@ if !VMWAREWORKSTATION!==1 (
 	echo pref.ws.session.window0.placement.right = "1544" >> "%USERPROFILE%\AppData\Roaming\VMware\Preferences.ini"
 	echo pref.ws.session.window0.placement.bottom = "857" >> "%USERPROFILE%\AppData\Roaming\VMware\Preferences.ini"
 	echo pref.ws.session.window0.maximized = "FALSE" >> "%USERPROFILE%\AppData\Roaming\VMware\Preferences.ini"
+	echo pref.updatesVersionIgnore.numItems = "1" >> "%USERPROFILE%\AppData\Roaming\VMware\Preferences.ini"
+	echo pref.updatesVersionIgnore0.key = "paid"  >> "%USERPROFILE%\AppData\Roaming\VMware\Preferences.ini"
+	echo pref.updatesVersionIgnore0.value = "bb61d294-c7fd-4b93-bdb3-48a9b5b74f44" >> "%USERPROFILE%\AppData\Roaming\VMware\Preferences.ini"
 )
 set /a "index=0"
 set /a "ws_index=1"
@@ -488,6 +517,12 @@ echo hints.hideAll = "FALSE" >> "%USERPROFILE%\AppData\Roaming\VMware\Preference
 
 echo [92m   Successfully registered !index! VM(s)[0m
 
+
+type "%USERPROFILE%\AppData\Roaming\VMware\Preferences.ini" | find "Advanced CyberCamp"
+if not errorlevel 1 (
+	call !USB_DRIVE!\Files\AdvancedCampOnly_Install_PacketTracer.bat 0
+)
+
 echo [94m [0m
 echo [4m[94m===========================================================[0m
 echo [7m[94m   Launching VMware Workstation or Player...[0m
@@ -515,6 +550,7 @@ if exist "C:\Program Files\VMware\VMware Workstation\vmware.exe" (
 		)
 	)
 )
+
+xcopy /Y !USB_DRIVE!\Files\FILES_TO_COPY_TO_CAMPDIR\* "!DESKTOPDIR!\!INSTALL_DIR_NAME!\"
 				
-msg * "Installation Completed.  You may now safely remove the thumb drive"
-pause
+rem msg * "Installation Completed.  You may now safely remove the thumb drive"
