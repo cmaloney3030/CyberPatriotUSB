@@ -6,7 +6,6 @@ setlocal enabledelayedexpansion
 :: =====================================================================
 set "REPO_RAW_BASE=https://github.com/cmaloney3030/CyberPatriotUSB/raw/main"
 set "LOCAL_DIR=%~dp0"
-echo "DIR: %LOCAL_DIR%"
 :: =====================================================================
 
 echo [94m [0m
@@ -104,8 +103,10 @@ for /r "%LOCAL_DIR%" %%F in (*) do (
         
         :: If it wasn't found in the manifest, purge it
         if "!IS_TRACKED!"=="0" (
-            echo [-] Deleting untracked file: !RELATIVE_PATH!
-            del /f /q "%%F" 2>nul
+			if "!RELATIVE_PATH:VMS_TO_INSTALL=!"=="!RELATIVE_PATH!" (
+				echo [-] Deleting untracked file: !RELATIVE_PATH!
+				del /f /q "%%F" 2>nul
+			)
         )
     )
 )
