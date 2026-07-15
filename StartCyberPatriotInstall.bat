@@ -12,7 +12,6 @@ if "%~1"=="--post-update" (
 	echo [94m [0m
 	echo [4m[94m===========================================================[0m
 	echo [7m[94m   Update successful! Running new version...[0m
-    goto :main_logic
 )
 
 echo [94m [0m
@@ -81,7 +80,6 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
 			if "!LOCAL_FILE!"=="%~f0" (
 				start "" "%~f0" --post-update
 				exit
-				
 			)
         ) else (
 			echo [91m   Error downloading !FILENAME!.  Skipping...[0m
