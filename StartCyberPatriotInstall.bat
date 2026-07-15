@@ -42,21 +42,23 @@ echo [92m   Successfully downloaded file checksum information[0m
 echo [94m [0m
 echo [4m[94m===========================================================[0m
 echo [7m[94m   Syncing: Downloading missing or modified files...[0m
+
+set "newest_file="
+set "newest_timestamp="
+for /f "delims=" %%A in ('dir "%LOCAL_DIR%" /b /s /a:-d /o:-d /t:w 2^>nul') do (
+	set "newest_file=%%A"
+	set "newest_timestamp=%%~tA"
+	:: Stop the loop immediately after the first (newest) file
+	goto :LAST_UPDATED
+)
+:LAST_UPDATED
+		
 :: 3. PHASE 1: Download & Update (Remote -> Local)
 for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
     set "REMOTE_HASH=%%A"
     set "FILENAME=%%B"
 	set "FILENAME=!FILENAME:~0,-1!"
     if "!REMOTE_HASH!"=="LAST_UPDATE" (
-		set "newest_file="
-		set "newest_timestamp="
-		for /f "delims=" %%A in ('dir "%LOCAL_DIR%" /b /s /a:-d /o:-d /t:w 2^>nul') do (
-			set "newest_file=%%A"
-			set "newest_timestamp=%%~tA"
-			:: Stop the loop immediately after the first (newest) file
-			goto :LAST_UPDATED
-		)
-		:LAST_UPDATED
 		if !FILENAME!=="!newest_timestamp!" (
 			echo [92m   No need to update[0m
 			goto :main_logic
