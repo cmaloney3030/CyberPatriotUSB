@@ -12,6 +12,7 @@ if "%~1"=="--post-update" (
 	echo [94m [0m
 	echo [4m[94m===========================================================[0m
 	echo [7m[94m   Update successful! Running new version...[0m
+	
 )
 
 echo [94m [0m
