@@ -7,6 +7,13 @@ setlocal enabledelayedexpansion
 set "REPO_RAW_BASE=https://github.com/cmaloney3030/CyberPatriotUSB/raw/main"
 set "LOCAL_DIR=%~dp0"
 :: =====================================================================
+:: Check if the script was just updated and needs cleanup
+if "%~1"=="--post-update" (
+	echo [94m [0m
+	echo [4m[94m===========================================================[0m
+	echo [7m[94m   Update successful! Running new version...[0m
+    goto :main_logic
+)
 
 echo [94m [0m
 echo [4m[94m===========================================================[0m
@@ -71,6 +78,10 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
         curl -s -L -f "!URL!" -o "!LOCAL_FILE!.tmp"
         if !errorlevel! equ 0 (
             move /y "!LOCAL_FILE!.tmp" "!LOCAL_FILE!" >nul
+			if "!LOCAL_FILE!"=="%~f0" (
+				start "" "%~f0" --post-update
+				exit
+			)
         ) else (
 			echo [91m   Error downloading !FILENAME!. Skipping...[0m
             del "!LOCAL_FILE!.tmp" 2>nul
