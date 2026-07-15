@@ -83,7 +83,7 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
 				exit
 			)
         ) else (
-			echo [91m   Error downloading !FILENAME!. Skipping...[0m
+			echo [91m   Error downloading !FILENAME!.  Skipping...[0m
             del "!LOCAL_FILE!.tmp" 2>nul
 			pause
         )
