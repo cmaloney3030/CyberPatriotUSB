@@ -81,6 +81,7 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
 			if "!LOCAL_FILE!"=="%~f0" (
 				start "" "%~f0" --post-update
 				exit
+				
 			)
         ) else (
 			echo [91m   Error downloading !FILENAME!.  Skipping...[0m
