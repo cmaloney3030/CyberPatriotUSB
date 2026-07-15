@@ -43,14 +43,6 @@ echo [94m [0m
 echo [4m[94m===========================================================[0m
 echo [7m[94m   Syncing: Downloading missing or modified files...[0m
 
-set "newest_file="
-set "newest_timestamp="
-for /f "delims=" %%A in ('dir "%LOCAL_DIR%" /b /s /a:-d /o:-d /t:w 2^>nul') do (
-	set "newest_file=%%A"
-	set "newest_timestamp=%%~tA"
-	:: Stop the loop immediately after the first (newest) file
-	goto :LAST_UPDATED
-)
 set /p last_updated=<"%LOCAL_DIR%"\Files\.updated
 set /p last_updated_counter=<"%LOCAL_DIR%"\Files\.updated_counter
 		
