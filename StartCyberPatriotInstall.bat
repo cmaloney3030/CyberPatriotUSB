@@ -80,7 +80,8 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
             move /y "!LOCAL_FILE!.tmp" "!LOCAL_FILE!" >nul
 			if "!LOCAL_FILE!"=="%~f0" (
 				start "" "%~f0" --post-update
-				exit
+				del "%TEMP_MANIFEST%" 2>nul
+				exit /b
 			)
         ) else (
 			echo [91m   Error downloading !FILENAME!.  Skipping...[0m
@@ -153,4 +154,4 @@ echo [7m[94m   Performing CyberPatriot Install...[0m
 call Files\CyberPatriotINSTALL.bat
 
 pause
-exit /b
+exit
