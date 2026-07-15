@@ -51,7 +51,8 @@ for /f "delims=" %%A in ('dir "%LOCAL_DIR%" /b /s /a:-d /o:-d /t:w 2^>nul') do (
 	:: Stop the loop immediately after the first (newest) file
 	goto :LAST_UPDATED
 )
-:LAST_UPDATED
+set /p last_updated=<"%LOCAL_DIR%"\Files\.updated
+set /p last_updated_counter=<"%LOCAL_DIR%"\Files\.updated_counter
 		
 :: 3. PHASE 1: Download & Update (Remote -> Local)
 for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
@@ -61,10 +62,17 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
     if "!REMOTE_HASH!"=="LAST_UPDATE" (
 		echo !newest_timestamp!
 		echo !FILENAME! 
-		if !FILENAME!=="!newest_timestamp!" (
-			echo [92m   No need to update[0m
-			goto :main_logic
+		if !FILENAME! == "!last_updated!" (
+			set /a "last_updated_counter+=1"
+			if !last_updated_counter! GEQ 10 (
+				echo 0 > "%LOCAL_DIR%"\Files\.updated_counter
+			) else (
+				echo !last_updated_counter! > "%LOCAL_DIR%"\Files\.updated_counter
+				echo [92m   No need to update !last_updated_counter! [0m
+				goto :main_logic
+			)
 		)
+		echo !FILENAME! > "%LOCAL_DIR%"\Files\.updated
 	) else (
 		set "LOCAL_FILE=%LOCAL_DIR%!FILENAME!"
 		set "LOCAL_HASH=0"
