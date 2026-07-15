@@ -72,6 +72,7 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
 				goto :main_logic
 			)
 		)
+		echo 0 > "%LOCAL_DIR%"\Files\.updated_counter
 		echo !FILENAME! > "%LOCAL_DIR%"\Files\.updated
 	) else (
 		set "LOCAL_FILE=%LOCAL_DIR%!FILENAME!"
