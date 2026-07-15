@@ -45,7 +45,7 @@ echo [7m[94m   Syncing: Downloading missing or modified files...[0m
 
 set /p last_updated=<"%LOCAL_DIR%"\Files\.updated
 set /p last_updated_counter=<"%LOCAL_DIR%"\Files\.updated_counter
-		
+
 :: 3. PHASE 1: Download & Update (Remote -> Local)
 for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
     set "REMOTE_HASH=%%A"
