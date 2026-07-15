@@ -59,6 +59,8 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
     set "FILENAME=%%B"
 	set "FILENAME=!FILENAME:~0,-1!"
     if "!REMOTE_HASH!"=="LAST_UPDATE" (
+		echo !newest_timestamp!
+		echo !FILENAME!
 		if !FILENAME!=="!newest_timestamp!" (
 			echo [92m   No need to update[0m
 			goto :main_logic
