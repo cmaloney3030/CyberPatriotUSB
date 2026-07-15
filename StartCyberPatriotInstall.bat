@@ -153,3 +153,4 @@ echo [7m[94m   Performing CyberPatriot Install...[0m
 call Files\CyberPatriotINSTALL.bat
 
 pause
+exit /b
