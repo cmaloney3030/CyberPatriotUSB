@@ -51,6 +51,7 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
     set "REMOTE_HASH=%%A"
     set "FILENAME=%%B"
 	set "FILENAME=!FILENAME:~0,-1!"
+	set "last_updated=!last_updated:~0,-1!"
     if "!REMOTE_HASH!"=="LAST_UPDATE" (
 		echo "!last_updated!_"
 		echo "!FILENAME!_"
