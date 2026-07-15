@@ -115,8 +115,10 @@ for /r "%LOCAL_DIR%" %%F in (*) do (
         :: If it wasn't found in the manifest, purge it
         if "!IS_TRACKED!"=="0" (
 			if "!RELATIVE_PATH:VMS_TO_INSTALL=!"=="!RELATIVE_PATH!" (
-				echo [-] Deleting untracked file: !RELATIVE_PATH!
-				del /f /q "%%F" 2>nul
+				if "!RELATIVE_PATH:System Volume Information=!"=="!RELATIVE_PATH!" (
+					echo [-] Deleting untracked file: !RELATIVE_PATH!
+					del /f /q "%%F" 2>nul
+				)
 			)
         )
     )
