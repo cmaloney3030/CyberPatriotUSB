@@ -47,7 +47,21 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
     set "REMOTE_HASH=%%A"
     set "FILENAME=%%B"
 	set "FILENAME=!FILENAME:~0,-1!"
-    
+    if "!REMOTE_HASH!"=="LAST_UPDATE" (
+		set "newest_file="
+		set "newest_timestamp="
+		for /f "delims=" %%A in ('dir "%LOCAL_DIR%" /b /s /a:-d /o:-d /t:w 2^>nul') do (
+			set "newest_file=%%A"
+			set "newest_timestamp=%%~tA"
+			:: Stop the loop immediately after the first (newest) file
+			goto :LAST_UPDATED
+		)
+		:LAST_UPDATED
+		if !FILENAME!=="!newest_timestamp!" (
+			echo [92m   No need to update[0m
+			goto :main_logic
+		)
+	)
     set "LOCAL_FILE=%LOCAL_DIR%!FILENAME!"
     set "LOCAL_HASH=0"
     
