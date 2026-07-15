@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: =====================================================================
-:: CONFIGURATION
+:: CONFIGURATION 
 :: =====================================================================
 set "REPO_RAW_BASE=https://github.com/cmaloney3030/CyberPatriotUSB/raw/main"
 set "LOCAL_DIR=%~dp0"
