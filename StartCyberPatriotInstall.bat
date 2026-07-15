@@ -61,48 +61,49 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
 			echo [92m   No need to update[0m
 			goto :main_logic
 		)
-	)
-    set "LOCAL_FILE=%LOCAL_DIR%!FILENAME!"
-    set "LOCAL_HASH=0"
-    
-    :: Check if local file exists
-    if exist "!LOCAL_FILE!" (
-        set "HASH_LINE="
-        for /f "skip=1 delims=" %%H in ('certutil -hashfile "!LOCAL_FILE!" SHA256 2^>nul') do (
-            if not defined HASH_LINE (
-                set "RAW_HASH=%%H"
-                set "LOCAL_HASH=!RAW_HASH: =!"
-                set "HASH_LINE=1"
-            )
-        )
-    )
-
-    :: Compare hashes
-    if /i "!LOCAL_HASH!" neq "!REMOTE_HASH!" (
-        if "!LOCAL_HASH!"=="0" (
-			echo [92m   Downloading new file: !FILENAME![0m
-        ) else (
-			echo [92m   Updating modified file: !FILENAME![0m
-        )
-        
-        :: Ensure subdirectories exist locally if the file path contains folders
-        for %%I in ("!LOCAL_FILE!") do if not exist "%%~dpI" mkdir "%%~dpI"
-        set "URL=%REPO_RAW_BASE%/!FILENAME:\=/!"
-		set "URL=!URL: =%%20!"
-        curl -s -L -f "!URL!" -o "!LOCAL_FILE!.tmp"
-        if !errorlevel! equ 0 (
-            move /y "!LOCAL_FILE!.tmp" "!LOCAL_FILE!" >nul
-			if "!LOCAL_FILE!"=="%~f0" (
-				start "" "%~f0" --post-update
-				del "%TEMP_MANIFEST%" 2>nul
-				exit /b
+	) else (
+		set "LOCAL_FILE=%LOCAL_DIR%!FILENAME!"
+		set "LOCAL_HASH=0"
+		
+		:: Check if local file exists
+		if exist "!LOCAL_FILE!" (
+			set "HASH_LINE="
+			for /f "skip=1 delims=" %%H in ('certutil -hashfile "!LOCAL_FILE!" SHA256 2^>nul') do (
+				if not defined HASH_LINE (
+					set "RAW_HASH=%%H"
+					set "LOCAL_HASH=!RAW_HASH: =!"
+					set "HASH_LINE=1"
+				)
 			)
-        ) else (
-			echo [91m   Error downloading !FILENAME!.  Skipping...[0m
-            del "!LOCAL_FILE!.tmp" 2>nul
-			pause
-        )
-    )
+		)
+
+		:: Compare hashes
+		if /i "!LOCAL_HASH!" neq "!REMOTE_HASH!" (
+			if "!LOCAL_HASH!"=="0" (
+				echo [92m   Downloading new file: !FILENAME![0m
+			) else (
+				echo [92m   Updating modified file: !FILENAME![0m
+			)
+			
+			:: Ensure subdirectories exist locally if the file path contains folders
+			for %%I in ("!LOCAL_FILE!") do if not exist "%%~dpI" mkdir "%%~dpI"
+			set "URL=%REPO_RAW_BASE%/!FILENAME:\=/!"
+			set "URL=!URL: =%%20!"
+			curl -s -L -f "!URL!" -o "!LOCAL_FILE!.tmp"
+			if !errorlevel! equ 0 (
+				move /y "!LOCAL_FILE!.tmp" "!LOCAL_FILE!" >nul
+				if "!LOCAL_FILE!"=="%~f0" (
+					start "" "%~f0" --post-update
+					del "%TEMP_MANIFEST%" 2>nul
+					exit /b
+				)
+			) else (
+				echo [91m   Error downloading !FILENAME!.  Skipping...[0m
+				del "!LOCAL_FILE!.tmp" 2>nul
+				pause
+			)
+		)
+	)
 )
 
 echo [94m [0m
