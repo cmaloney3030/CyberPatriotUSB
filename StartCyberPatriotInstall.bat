@@ -53,15 +53,13 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
 	set "FILENAME=!FILENAME:~0,-1!"
 	set "last_updated=!last_updated:~0,-1!"
     if "!REMOTE_HASH!"=="LAST_UPDATE" (
-		echo "!last_updated!_"
-		echo "!FILENAME!_"
 		if "!FILENAME!" == "!last_updated!" (
 			set /a "last_updated_counter+=1"
 			if !last_updated_counter! GEQ 10 (
 				echo 0 > "%LOCAL_DIR%"\Files\.updated_counter
 			) else (
 				echo !last_updated_counter! > "%LOCAL_DIR%"\Files\.updated_counter
-				echo [92m   No need to update !last_updated_counter! [0m
+				echo [92m   No need to update....number !last_updated_counter! of 10 [0m
 				goto :main_logic
 			)
 		)
