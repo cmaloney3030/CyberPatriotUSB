@@ -58,6 +58,7 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
 			set /a "last_updated_counter+=1"
 			if !last_updated_counter! GEQ 10 (
 				echo 0 > "%LOCAL_DIR%"\Files\.updated_counter
+				echo [92m   Counter reached limit, updating...[0m
 			) else (
 				if "%~1"=="--post-update" (
 					echo [92m   Main script updated, checking for additional updates... [0m
