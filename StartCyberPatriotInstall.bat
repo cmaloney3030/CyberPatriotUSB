@@ -12,8 +12,6 @@ if "%~1"=="--post-update" (
 	echo [94m [0m
 	echo [4m[94m===========================================================[0m
 	echo [7m[94m   Update successful! Running new version...[0m
-	del "%LOCAL_DIR%"\Files\.updated 2>nul
-	del "%LOCAL_DIR%"\Files\.updated_counter 2>nul
 )
 
 echo [94m [0m
@@ -59,9 +57,13 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
 			if !last_updated_counter! GEQ 10 (
 				echo 0 > "%LOCAL_DIR%"\Files\.updated_counter
 			) else (
-				echo !last_updated_counter! > "%LOCAL_DIR%"\Files\.updated_counter
-				echo [92m   No need to update....number !last_updated_counter! of 10 [0m
-				goto :main_logic
+				if "%~1"=="--post-update" (
+					echo [92m   Main script updated, checking for additional updates... [0m
+				) else (
+					echo !last_updated_counter! > "%LOCAL_DIR%"\Files\.updated_counter
+					echo [92m   No need to update....number !last_updated_counter! of 10 [0m
+					goto :main_logic
+				)
 			)
 		)
 		echo 0 > "%LOCAL_DIR%"\Files\.updated_counter
