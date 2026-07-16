@@ -12,7 +12,6 @@ if "%~1"=="--post-update" (
 	echo [94m [0m
 	echo [4m[94m===========================================================[0m
 	echo [7m[94m   Update successful! Running new version...[0m
-	
 )
 
 echo [94m [0m
@@ -97,6 +96,8 @@ for /f "usebackq tokens=1,*" %%A in ("%TEMP_MANIFEST%") do (
 			if !errorlevel! equ 0 (
 				move /y "!LOCAL_FILE!.tmp" "!LOCAL_FILE!" >nul
 				if "!LOCAL_FILE!"=="%~f0" (
+					del "%LOCAL_DIR%"\Files\.updated 2>nul
+					del "%LOCAL_DIR%"\Files\.updated_counter 2>nul
 					start "" "%~f0" --post-update
 					del "%TEMP_MANIFEST%" 2>nul
 					exit /b
