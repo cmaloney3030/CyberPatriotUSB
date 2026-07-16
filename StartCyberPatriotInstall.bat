@@ -30,7 +30,7 @@ echo [92m   Verified Internet Connectivity[0m
 
 :: 2. Download the remote checksum manifest
 set "TEMP_MANIFEST=%TEMP%\remote_checksums_%RANDOM%.txt"
-curl -L -s -f --connect-timeout 5 "%REPO_RAW_BASE%/checksums.txt" -o "%TEMP_MANIFEST%"
+curl -L -s -f --connect-timeout 5 "%REPO_RAW_BASE%/checksums.txt?%RANDOM%" -o "%TEMP_MANIFEST%"
 
 if %errorlevel% neq 0 (
 	echo [91m   Error: Could not retrieve checksums.txt from repository.  Skipping synchronization...[0m
