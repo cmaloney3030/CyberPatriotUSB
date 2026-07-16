@@ -166,6 +166,7 @@ for /f "delims=" %%D in ('dir "%LOCAL_DIR%" /ad /b /s ^| sort /r') do (
 
 :: Final cleanup of the temp manifest
 del "%TEMP_MANIFEST%" 2>nul
+mkdir "%LOCAL_DIR%"\Files\VMS_TO_INSTALL 2>nul
 echo [92m   Mirror synchronization complete.[0m
 echo.
 
